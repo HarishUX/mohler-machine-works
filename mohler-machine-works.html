@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohler Machine Works - Documents</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 32px 40px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .navigation {
+            background: white;
+            padding: 20px 40px;
+            border-bottom: 1px solid #e5e5e7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6e6e73;
+            font-size: 15px;
+        }
+
+        .home-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: none;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn:hover {
+            background: #e8e8ed;
+        }
+
+        .view-btn.active {
+            background: #007AFF;
+            color: white;
+        }
+
+        .view-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .content {
+            padding: 32px 40px;
+        }
+
+        /* Grid View */
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-view.hidden {
+            display: none;
+        }
+
+        .folder-card {
+            background: white;
+            border: 1px solid #e5e5e7;
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .folder-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .folder-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #007AFF;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .folder-icon svg {
+            width: 44px;
+            height: 44px;
+            fill: white;
+        }
+
+        .folder-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+            line-height: 1.4;
+        }
+
+        /* List View */
+        .list-view {
+            display: none;
+        }
+
+        .list-view.active {
+            display: block;
+        }
+
+        .list-item {
+            background: white;
+            border: 1px solid #e5e5e7;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .list-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .list-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .list-folder-icon {
+            width: 48px;
+            height: 48px;
+            background: #007AFF;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .list-folder-icon svg {
+            width: 26px;
+            height: 26px;
+            fill: white;
+        }
+
+        .list-folder-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .chevron-icon {
+            width: 20px;
+            height: 20px;
+            color: #86868b;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 24px 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .navigation {
+                padding: 16px 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .grid-view {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 16px;
+            }
+
+            .folder-card {
+                padding: 24px 16px;
+            }
+
+            .folder-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .folder-icon svg {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Mohler Machine Works</h1>
+    </div>
+
+    <div class="navigation">
+        <div class="nav-left">
+            <svg class="home-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </div>
+
+        <div class="view-toggle">
+            <button id="gridBtn" class="view-btn active" onclick="switchView('grid')">
+                <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 11h6V4H4v7zm0 9h6v-7H4v7zm8 0h6v-7h-6v7zm0-16v7h6V4h-6z"/>
+                </svg>
+                Grid
+            </button>
+            <button id="listBtn" class="view-btn" onclick="switchView('list')">
+                <svg class="view-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                </svg>
+                List
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="gridView" class="grid-view">
+            <a href="https://drive.google.com/file/d/1B7Rj-Mc99yroOe8GNTxX2aXsjyizKKuJ/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER OHTC i-SMART</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1ocAmS-OZ9aXf58C58HLBJimXHF6EZ_RJ/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER OHTC - SPG</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1XQAn7p7WZs_95Nmn8oknUxEKiAtP29O6/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER OHTC - WVG</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1fepdDkvPCRgL1hMxqkl341R82CEG_L9V/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER BELT DRIVE OHTC</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/12mQcfxQIizTyaGIoIXgOqLBRkM0Jo9De/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER CTS</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1pVSulHUeMx5OkICHC5mC7NO-rJc5y_ZY/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER BTS</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1stdz-_gKFxyaDY4U0w97cI0CI4l-2lYn/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER YCP - ROUND</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1SxUY1yIRqD_kpYBkw3dtjZMUk8o8fshg/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER YCP - GAIN (CUBICAL)</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1_92bbu_Q96YK61FdN2lWXAGtNl3SoCja/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER YCP - GAIN PLUS (CUBICAL)</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1XKL1Jw8BolqiEU2Dqz9IrAI6l7D7IaSz/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER METAL & SPARK DIVERTER SYSTEM</div>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1v-8jI5vDyp3GHZm9ss1FqFzC5RlvaQXQ/view" target="_blank" class="folder-card">
+                <div class="folder-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                </div>
+                <div class="folder-name">MOHLER CENVAC</div>
+            </a>
+        </div>
+
+        <div id="listView" class="list-view">
+            <a href="https://drive.google.com/file/d/1B7Rj-Mc99yroOe8GNTxX2aXsjyizKKuJ/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER OHTC i-SMART</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1ocAmS-OZ9aXf58C58HLBJimXHF6EZ_RJ/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER OHTC - SPG</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1XQAn7p7WZs_95Nmn8oknUxEKiAtP29O6/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER OHTC - WVG</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1fepdDkvPCRgL1hMxqkl341R82CEG_L9V/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER BELT DRIVE OHTC</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/12mQcfxQIizTyaGIoIXgOqLBRkM0Jo9De/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER CTS</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1pVSulHUeMx5OkICHC5mC7NO-rJc5y_ZY/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER BTS</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1stdz-_gKFxyaDY4U0w97cI0CI4l-2lYn/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER YCP - ROUND</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1SxUY1yIRqD_kpYBkw3dtjZMUk8o8fshg/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER YCP - GAIN (CUBICAL)</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1_92bbu_Q96YK61FdN2lWXAGtNl3SoCja/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER YCP - GAIN PLUS (CUBICAL)</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1XKL1Jw8BolqiEU2Dqz9IrAI6l7D7IaSz/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER METAL & SPARK DIVERTER SYSTEM</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+
+            <a href="https://drive.google.com/file/d/1v-8jI5vDyp3GHZm9ss1FqFzC5RlvaQXQ/view" target="_blank" class="list-item">
+                <div class="list-left">
+                    <div class="list-folder-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="list-folder-name">MOHLER CENVAC</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function switchView(view) {
+            const gridView = document.getElementById('gridView');
+            const listView = document.getElementById('listView');
+            const gridBtn = document.getElementById('gridBtn');
+            const listBtn = document.getElementById('listBtn');
+
+            if (view === 'grid') {
+                gridView.classList.remove('hidden');
+                listView.classList.remove('active');
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            } else {
+                gridView.classList.add('hidden');
+                listView.classList.add('active');
+                gridBtn.classList.remove('active');
+                listBtn.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
